@@ -26,14 +26,23 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   initState() {
     super.initState();
+    updateData();
+  }
+
+  updateData() {
     getChannel().then((res) {
-      setState(() => res.sensors.forEach((sensor) => _sensors.add(new SensorWidget(sensor))));
+      setState(() => res.sensors
+          .forEach((sensor) => _sensors.add(new SensorWidget(sensor))));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      floatingActionButton: new FloatingActionButton(
+        child: new Icon(Icons.refresh),
+        onPressed: updateData(),
+      ),
         appBar: new AppBar(
           title: new Text(widget.title),
         ),
@@ -53,12 +62,14 @@ class SensorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Card(
         child: new ListTile(
-          trailing: new Text(sensor.last.toStringAsPrecision(3),
-          style: new TextStyle(
-            fontSize: 20.0
-          ),),
-          title: new Text(sensor.name),
-          subtitle: new Text(sensor.tempHistory.map((reading) => reading.toStringAsPrecision(3)).join(', ')),
+      trailing: new Text(
+        sensor.last.toStringAsPrecision(3),
+        style: new TextStyle(fontSize: 20.0),
+      ),
+      title: new Text(sensor.name),
+      subtitle: new Text(sensor.tempHistory
+          .map((reading) => reading.toStringAsPrecision(3))
+          .join(', ')),
     ));
   }
 }
