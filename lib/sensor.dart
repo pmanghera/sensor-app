@@ -59,8 +59,7 @@ class Sensor {
 
 /// For testing purposes only
 main() {
-  // Co-ords for Venice Beach, CA
   Future<Channel> test = getChannel();
   test.then(
-      (res) => res._sensors.forEach((sensor) => print(sensor.toString())));
+      (res) => res._sensors.forEach((sensor) => print(sensor)));
 }
