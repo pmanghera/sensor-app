@@ -58,6 +58,7 @@ class SensorWidget extends StatelessWidget {
             fontSize: 20.0
           ),),
           title: new Text(sensor.name),
+          subtitle: new Text(sensor.tempHistory.map((reading) => reading.toStringAsPrecision(3)).join(', ')),
     ));
   }
 }
