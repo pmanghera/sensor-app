@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: new Center(
           child: new ListView(
-
+            children: _sensors,
           ),
         ));
   }
@@ -53,7 +53,10 @@ class SensorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Card(
         child: new ListTile(
-          trailing: new Text(sensor.last.toStringAsPrecision(3)),
+          trailing: new Text(sensor.last.toStringAsPrecision(3),
+          style: new TextStyle(
+            fontSize: 20.0
+          ),),
           title: new Text(sensor.name),
     ));
   }
