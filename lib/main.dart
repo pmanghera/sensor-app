@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:english_words/english_words.dart';
-// import 'dart:io';
-import 'dart:convert';
-import 'dart:async';
-import 'package:http/http.dart' as http;
+import 'sensor.dart';
 
 void main() => runApp(new MyApp());
 
@@ -11,54 +7,54 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Welcome to Flutter',
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Welcome to Flutter'),
-        ),
-        body: new Data(),
-      ),
+      title: 'Sensor Monitor',
+      theme: new ThemeData(brightness: Brightness.dark),
+      home: new MyHomePage(title: 'Sensor Monitor'),
     );
   }
 }
 
-class Data extends StatefulWidget {
-  @override
-  createState() => new DataState();
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key, key, this.title}) : super(key: key);
+  final String title;
+  _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class DataState extends State<Data> {
-  Map _channelData;
+class _MyHomePageState extends State<MyHomePage> {
+  List<SensorWidget> _sensors = <SensorWidget>[];
+
+  @override
+  initState() {
+    super.initState();
+    getChannel().then((res) {
+      setState(() => res.sensors.forEach((sensor) => _sensors.add(new SensorWidget(sensor))));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new ListView.builder(
-      padding: const EdgeInsets.all(10.0),
-      itemCount: _channelData == null ? 0 : _channelData.length,
-      itemBuilder: (BuildContext context, int index) {
-        return new Card(
-          child: new Text(_channelData['feeds'][index]['field1']),
-        );
-      },
-    );
+    return new Scaffold(
+        appBar: new AppBar(
+          title: new Text(widget.title),
+        ),
+        body: new Center(
+          child: new ListView(
+
+          ),
+        ));
   }
+}
+
+class SensorWidget extends StatelessWidget {
+  SensorWidget(this.sensor);
+  final Sensor sensor;
 
   @override
-  void initState() {
-    super.initState();
-    this.getData();
-  }
-
-  Future<Map> getData() async {
-    http.Response response = await http.get(
-        Uri.encodeFull(
-            'https://api.thingspeak.com/channels/9/feeds.json?results=2'),
-        headers: {"Accept": "application/json"});
-    Map data = JSON.decode(response.body);
-    print(data);
-
-    this.setState(() {
-      _channelData = data;
-    });
-    return data;
+  Widget build(BuildContext context) {
+    return new Card(
+        child: new ListTile(
+          trailing: new Text(sensor.last.toStringAsPrecision(3)),
+          title: new Text(sensor.name),
+    ));
   }
 }

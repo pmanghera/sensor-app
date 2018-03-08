@@ -37,23 +37,23 @@ Future<Channel> getChannel() async {
 }
 
 class Sensor {
-  String __name;
+  String _name;
   List<double> _tempHistory = [];
   int _fieldNum;
 
-  Sensor(this.__name, this._fieldNum);
+  Sensor(this._name, this._fieldNum);
 
   void addTemp(double newTemp) {
     _tempHistory.add(newTemp);
   }
 
   int get fieldNum => _fieldNum;
-  String get _name => __name;
+  String get name => _name;
   List get tempHistory => _tempHistory;
   double get last => _tempHistory.last;
 
   String toString() {
-    return '$__name: ${(_tempHistory.last).toStringAsPrecision(3)}';
+    return '$_name: ${(_tempHistory.last).toStringAsPrecision(3)}';
   }
 }
 
