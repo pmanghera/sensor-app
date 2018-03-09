@@ -54,7 +54,7 @@ class TextInputState extends State<TextInput>{
                         padding: const EdgeInsets.all(10.0),
                         child: new TextField(
                             decoration: new InputDecoration(
-                                hintText: "Type Minumum Alret Temperature Here"
+                                hintText: "Type Minumum Alert Temperature Here"
                             ),
                             onChanged: (String str) {
                               setState(() {
@@ -67,7 +67,7 @@ class TextInputState extends State<TextInput>{
                         padding: const EdgeInsets.all(10.0),
                         child:new TextField(
                             decoration: new InputDecoration(
-                                hintText: "Type Maximum Alret Temperature Here"
+                                hintText: "Type Maximum Alert Temperature Here"
                             ),
                             onChanged: (String str) {
                               setState(() {
