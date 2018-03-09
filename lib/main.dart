@@ -24,33 +24,38 @@ class _MyHomePageState extends State<MyHomePage> {
   List<SensorWidget> _sensors = <SensorWidget>[];
 
   @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        floatingActionButton: new FloatingActionButton(
+          child: new Icon(Icons.refresh),
+          onPressed: () {
+            updateData();
+          },
+        ),
+        appBar: new AppBar(
+          title: new Text(widget.title),
+        ),
+        body: new Center(
+          child: new ListView.builder(
+              itemCount: _sensors == null ? 0 : _sensors.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _sensors[index];
+              }),
+        ));
+  }
+
+  @override
   initState() {
     super.initState();
     updateData();
   }
 
-  updateData() {
-    getChannel().then((res) {
-      setState(() => res.sensors
-          .forEach((sensor) => _sensors.add(new SensorWidget(sensor))));
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      floatingActionButton: new FloatingActionButton(
-        child: new Icon(Icons.refresh),
-        onPressed: updateData(),
-      ),
-        appBar: new AppBar(
-          title: new Text(widget.title),
-        ),
-        body: new Center(
-          child: new ListView(
-            children: _sensors,
-          ),
-        ));
+  void updateData() async {
+    _sensors.clear();
+    var res = await getChannel();
+    this.setState(() => res.sensors
+        .forEach((sensor) => _sensors.add(new SensorWidget(sensor))));
+    print(_sensors.last.sensor.tempHistory.last.toStringAsPrecision(3));
   }
 }
 
