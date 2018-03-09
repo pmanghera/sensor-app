@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'sensor.dart';
+import 'dart:async';
 
 void main() => runApp(new MyApp());
 
@@ -36,11 +37,13 @@ class _MyHomePageState extends State<MyHomePage> {
           title: new Text(widget.title),
         ),
         body: new Center(
-          child: new ListView.builder(
-              itemCount: _sensors == null ? 0 : _sensors.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _sensors[index];
-              }),
+          child: new RefreshIndicator(
+              onRefresh: (() => updateData()),
+              child: new ListView.builder(
+                  itemCount: _sensors == null ? 0 : _sensors.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _sensors[index];
+                  })),
         ));
   }
 
@@ -50,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
     updateData();
   }
 
-  void updateData() async {
+  Future<Null> updateData() async {
     _sensors.clear();
     var res = await getChannel();
     this.setState(() => res.sensors
@@ -67,9 +70,9 @@ class SensorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Card(
         child: new ListTile(
-      trailing: new Text(
-        sensor.last.toStringAsPrecision(3),
-        style: new TextStyle(fontSize: 20.0),
+          trailing: new Text(
+            sensor.last.toStringAsPrecision(3),
+            style: new TextStyle(fontSize: 20.0),
       ),
       title: new Text(sensor.name),
       subtitle: new Text(sensor.tempHistory

@@ -29,8 +29,8 @@ class Channel {
   String get name => _name;
 }
 
-Future<Channel> getChannel() async {
-  String url = 'https://api.thingspeak.com/channels/9/feeds.json?results=2';
+Future<Channel> getChannel([int channelId = 9, int results = 10]) async {
+  String url = 'https://api.thingspeak.com/channels/$channelId/feeds.json?results=$results';
   return http
       .get(url)
       .then((res) => (new Channel.fromJson(JSON.decode(res.body) as Map)));
@@ -43,9 +43,7 @@ class Sensor {
 
   Sensor(this._name, this._fieldNum);
 
-  void addTemp(double newTemp) {
-    _tempHistory.add(newTemp);
-  }
+  void addTemp(double newTemp) => _tempHistory.add(newTemp);
 
   int get fieldNum => _fieldNum;
   String get name => _name;
