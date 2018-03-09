@@ -30,6 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButton: new FloatingActionButton(
           child: new Icon(Icons.refresh),
           onPressed: () {
+            // This is redundant now
+            // change to add Channel or remove
             updateData();
           },
         ),
