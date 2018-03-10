@@ -1,5 +1,19 @@
 import 'package:flutter/material.dart';
-// import 'date'
+
+List<String> monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 
 class Sensor {
   String _name;
@@ -10,7 +24,7 @@ class Sensor {
 
   void addTemp(double newTemp, [String time]) {
     _tempHistory.add(newTemp);
-    _lastUpdated = DateTime.parse(time);
+    _lastUpdated = DateTime.parse(time).toLocal().subtract(new Duration(hours: 8));
   }
 
   int get fieldNum => _fieldNum;
@@ -18,6 +32,8 @@ class Sensor {
   List get tempHistory => _tempHistory;
   double get last => _tempHistory.last;
   DateTime get lastUpdated => _lastUpdated;
+  String get lastUpdatedPretty =>
+      '${monthNames[_lastUpdated.month - 1]} ${_lastUpdated.day} at ${_lastUpdated.hour % 12}:${_lastUpdated.minute < 10 ? "0" + lastUpdated.minute.toString() : lastUpdated.minute} ${_lastUpdated.hour > 12 ? "PM" : "AM"}';
 
   String toString() {
     return '$_name: ${(_tempHistory.last).toStringAsPrecision(3)}';
@@ -37,6 +53,6 @@ class SensorWidget extends StatelessWidget {
               style: new TextStyle(fontSize: 20.0),
             ),
             title: new Text(sensor.name),
-            subtitle: new Text('Last updated: ${sensor.lastUpdated.toLocal().toString()}')));
+            subtitle: new Text('Last updated: ${sensor.lastUpdatedPretty}')));
   }
 }
