@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'sensor.dart';
 import 'dart:async';
+import 'channel.dart';
 
 void main() => runApp(new MyApp());
 
@@ -61,23 +62,5 @@ class _MyHomePageState extends State<MyHomePage> {
     this.setState(() => res.sensors
         .forEach((sensor) => _sensors.add(new SensorWidget(sensor))));
     print(_sensors.last.sensor.tempHistory.last.toStringAsPrecision(3));
-  }
-}
-
-class SensorWidget extends StatelessWidget {
-  SensorWidget(this.sensor);
-  final Sensor sensor;
-
-  @override
-  Widget build(BuildContext context) {
-    return new Card(
-        child: new ListTile(
-          trailing: new Text(
-            sensor.last.toStringAsPrecision(3),
-            style: new TextStyle(fontSize: 20.0),
-      ),
-      title: new Text(sensor.name),
-      subtitle: new Text('Last updated: ${sensor.lastUpdated}')
-    ));
   }
 }
