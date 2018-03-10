@@ -77,9 +77,7 @@ class SensorWidget extends StatelessWidget {
             style: new TextStyle(fontSize: 20.0),
       ),
       title: new Text(sensor.name),
-      subtitle: new Text(sensor.tempHistory
-          .map((reading) => reading.toStringAsPrecision(3))
-          .join(', ')),
+      subtitle: new Text('Last updated: ${sensor.lastUpdated}')
     ));
   }
 }
