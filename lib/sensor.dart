@@ -49,7 +49,7 @@ class SensorWidget extends StatelessWidget {
     return new Card(
         child: new ListTile(
             trailing: new Text(
-              sensor.last.toStringAsPrecision(3),
+              (sensor.last == -0.0 && sensor.last.isNegative) ? 'n/a': sensor.last.toStringAsPrecision(3),
               style: new TextStyle(fontSize: 20.0),
             ),
             title: new Text(sensor.name),
