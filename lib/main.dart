@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import './pages/homePage.dart';
-import './pages/channelPage.dart';
 
 void main() => runApp(new MyApp());
 
