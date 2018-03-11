@@ -6,21 +6,22 @@ class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
   _MyHomePageState createState() => new _MyHomePageState();
+  static void setChannel(int){
+    _MyHomePageState.channelIds.add(435497);
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ChannelWidget> _channels = [];
-  List<int> _channelIds = [9, 21];
+  static List<int> channelIds = [9, 21,];
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         floatingActionButton: new FloatingActionButton(
-          child: new Icon(Icons.refresh),
+          child: new Icon(Icons.add),
           onPressed: () {
-            // This is redundant now
-            // change to add Channel or remove
-            updateData();
+            Navigator.of(context).pushNamed("/input page");
           },
         ),
         appBar: new AppBar(
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Null> updateData() async {
     _channels.clear();
     List<ChannelWidget> newChannels = [];
-    for (int id in _channelIds) {
+    for (int id in channelIds) {
       Channel res = await getChannel(id);
       newChannels.add(new ChannelWidget(res));
     }

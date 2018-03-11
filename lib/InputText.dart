@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './pages/homePage.dart';
 
 class TextInput extends StatefulWidget{
   @override
@@ -9,9 +10,10 @@ class TextInputState extends State<TextInput>{
 
   String result ="";
   String sensorName;
-  String serialNumber;
+  static String serialNumber = '0';
   String minTemp;
   String maxTemp;
+  int channelID = int.parse(serialNumber);
 
   @override
   Widget build(BuildContext context){
@@ -78,7 +80,10 @@ class TextInputState extends State<TextInput>{
                       ),
                       new RaisedButton(
                           child: new Text("Add Sensor") ,
-                          onPressed: null,
+                          onPressed: () {
+                            MyHomePage.setChannel(channelID);
+                            Navigator.of(context).pushNamed("/");
+                          }
                       )
                     ]
                 )
