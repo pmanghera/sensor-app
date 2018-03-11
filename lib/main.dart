@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './pages/homePage.dart';
 import './pages/channelPage.dart';
+import 'InputText.dart';
 
 void main() => runApp(new MyApp());
 
@@ -11,6 +12,9 @@ class MyApp extends StatelessWidget {
       title: 'Sensor Monitor',
       theme: new ThemeData(brightness: Brightness.dark),
       home: new MyHomePage(title: 'Sensor Monitor'),
+      routes: <String, WidgetBuilder> {
+        "/input page": (BuildContext context) => new TextInput()
+      }
     );
   }
 }
