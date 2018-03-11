@@ -11,7 +11,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ChannelWidget> _channels = [];
-  List<int> _channelIds = [9];
+  List<int> _channelIds = [9, 21];
 
   @override
   Widget build(BuildContext context) {

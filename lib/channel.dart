@@ -25,8 +25,9 @@ class Channel {
     });
     for (Map feed in _jsonData['feeds']) {
       for (Sensor sensor in _sensors) {
+        // Let's try to find a better way to handle null
         sensor.addTemp(
-            double.parse(feed['field${sensor.fieldNum}']), feed['created_at']);
+            feed['field${sensor.fieldNum}'] == null ? -0.0: double.parse(feed['field${sensor.fieldNum}']), feed['created_at']);
       }
     }
   }
