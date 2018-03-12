@@ -46,6 +46,8 @@ class Channel {
       _jsonData = res.jsonData;
       _name = res.name;
       _sensors = res.sensors;
+      _latitude = res.location[0];
+      _longitude = res.location[1];
     });
   }
 

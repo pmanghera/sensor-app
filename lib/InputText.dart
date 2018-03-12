@@ -81,8 +81,8 @@ class TextInputState extends State<TextInput>{
                       new RaisedButton(
                           child: new Text("Add Sensor") ,
                           onPressed: () {
-                            MyHomePage.setChannel(channelID);
-                            Navigator.of(context).pushNamed("/");
+                            // MyHomePage.addChannelId(int.parse(serialNumber));
+                            Navigator.of(context).pop(int.parse(serialNumber));
                           }
                       )
                     ]

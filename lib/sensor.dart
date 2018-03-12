@@ -24,7 +24,7 @@ class Sensor {
 
   void addTemp(double newTemp, [String time]) {
     _tempHistory.add(newTemp);
-    _lastUpdated = DateTime.parse(time).toLocal().subtract(new Duration(hours: 8));
+    _lastUpdated = DateTime.parse(time).toLocal();
   }
 
   int get fieldNum => _fieldNum;

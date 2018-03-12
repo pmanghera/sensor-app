@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../channel.dart';
+import '../file.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
   _MyHomePageState createState() => new _MyHomePageState();
-  static void setChannel(int){
-    _MyHomePageState.channelIds.add(435497);
+  static void addChannelId(int id) async {
+    _MyHomePageState.channelIds.add(id);
+    writeIdsToFile(_MyHomePageState.channelIds);
   }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ChannelWidget> _channels = [];
-  static List<int> channelIds = [9, 21,];
+  static List<int> channelIds = [];
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         floatingActionButton: new FloatingActionButton(
           child: new Icon(Icons.add),
-          onPressed: () {
-            Navigator.of(context).pushNamed("/input page");
+          onPressed: () async {
+            int newId =
+                ((await Navigator.of(context).pushNamed("/input page")));
+            setState(() => channelIds.add(newId));
+            updateData();
           },
         ),
         appBar: new AppBar(
@@ -41,7 +46,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   initState() {
     super.initState();
+    addIdsFromFile();
     updateData();
+  }
+
+  Future<Null> addIdsFromFile() async {
+    try {
+      List<int> newIds = (await readIdsFromFile());
+      setState(() => channelIds.addAll(newIds));
+    } on NoSuchMethodError {
+      return;
+    }
   }
 
   Future<Null> updateData() async {
