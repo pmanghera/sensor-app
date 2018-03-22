@@ -25,8 +25,13 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () async {
             int newId =
                 ((await Navigator.of(context).pushNamed("/input page")));
-            setState(() => channelIds.add(newId));
+            setState(() {
+              if (!channelIds.contains(newId)) {
+                channelIds.add(newId);
+              }
+            });
             updateData();
+            writeIdsToFile(channelIds);
           },
         ),
         appBar: new AppBar(
@@ -46,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   initState() {
     super.initState();
+    channelIds.clear(); //testing only, remove later
     addIdsFromFile();
     updateData();
   }
@@ -53,20 +59,33 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Null> addIdsFromFile() async {
     try {
       List<int> newIds = (await readIdsFromFile());
-      setState(() => channelIds.addAll(newIds));
+      if (newIds == [-1]) {
+        return;
+      } else {
+        newIds.removeWhere((id) => channelIds.contains(id) || id == null);
+        setState(() => channelIds.addAll(newIds));
+      }
     } on NoSuchMethodError {
       return;
     }
   }
 
   Future<Null> updateData() async {
-    _channels.clear();
     List<ChannelWidget> newChannels = [];
+    setState(() => channelIds.removeWhere((id) => id == null || id < 1));
+    _channels.clear();
     for (int id in channelIds) {
-      Channel res = await getChannel(id);
-      newChannels.add(new ChannelWidget(res));
+      try {
+        Channel res = await getChannel(id);
+        newChannels.add(new ChannelWidget(res));
+      } catch (e) {
+        print("Couldn't find channel $id");
+        channelIds.remove(id);
+      }
     }
-
-    this.setState(() => _channels.addAll(newChannels));
+    this.setState(() {
+      _channels.addAll(newChannels);
+    });
+    writeIdsToFile(channelIds);
   }
 }

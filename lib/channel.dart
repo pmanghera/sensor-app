@@ -12,6 +12,7 @@ class Channel {
   int id;
   double _latitude;
   double _longitude;
+  Channel([this._name, this.id]);
 
   Channel.fromJson(Map jsonMap) {
     int _counter = 1;
@@ -60,9 +61,14 @@ class Channel {
 Future<Channel> getChannel([int channelId = 9, int results = 10]) async {
   String url =
       'https://api.thingspeak.com/channels/$channelId/feeds.json?results=$results';
+      try{
   return http
       .get(url)
       .then((res) => (new Channel.fromJson(JSON.decode(res.body) as Map)));
+      }
+      catch (e) {
+        return new Channel('Error');
+      }
 }
 
 class ChannelWidget extends StatelessWidget {

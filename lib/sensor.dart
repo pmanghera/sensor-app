@@ -47,12 +47,18 @@ class SensorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Card(
-        child: new ListTile(
-            trailing: new Text(
-              (sensor.last == -0.0 && sensor.last.isNegative) ? 'n/a': sensor.last.toStringAsPrecision(3),
-              style: new TextStyle(fontSize: 20.0),
-            ),
-            title: new Text(sensor.name),
-            subtitle: new Text('Last updated: ${sensor.lastUpdatedPretty}')));
+      child: new ListTile(
+        trailing: new Text(
+          (sensor.last == -0.0 && sensor.last.isNegative)
+              ? 'n/a'
+              : sensor.last.toStringAsPrecision(3),
+          style: new TextStyle(fontSize: 20.0),
+        ),
+        title: new Text(sensor.name),
+        subtitle: new Text(
+          'Last updated: ${sensor.lastUpdatedPretty}',
+        ),
+      ),
+    );
   }
 }
