@@ -1,9 +1,9 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'sensor.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import './pages/channelPage.dart';
+import 'package:http/http.dart' as http;
+import './pages/channel_page.dart';
+import 'sensor_with_graph.dart';
 
 class Channel {
   Map _jsonData;
@@ -12,35 +12,36 @@ class Channel {
   int id;
   double _latitude;
   double _longitude;
+  DateTime startTime;
+  DateTime endTime;
+  bool startSet = false;
+  bool endSet = false;
   Channel([this._name, this.id]);
 
   Channel.fromJson(Map jsonMap) {
     int _counter = 1;
-    this.id = jsonMap['channel']['id'];
+    id = jsonMap['channel']['id'];
     _jsonData = jsonMap;
     _name = _jsonData['channel']['name'];
     _latitude = double.parse(_jsonData['channel']['latitude']);
     _longitude = double.parse(_jsonData['channel']['longitude']);
     _jsonData['channel'].forEach((key, value) {
       if (key.startsWith('field')) {
-        _sensors
-            .add(new Sensor(_jsonData['channel']['field$_counter'], _counter));
+        _sensors.add(Sensor(_jsonData['channel']['field$_counter'], _counter));
         _counter++;
       }
     });
     for (Map feed in _jsonData['feeds']) {
       for (Sensor sensor in _sensors) {
-        // Let's try to find a better way to handle null
-        sensor.addTemp(
-            feed['field${sensor.fieldNum}'] == null
-                ? -0.0
-                : double.parse(feed['field${sensor.fieldNum}']),
+        sensor.addTemp(double.parse(feed['field${sensor.fieldNum}'] ?? -0.0),
             feed['created_at']);
       }
     }
   }
 
   Channel.fromId(int id) {
+    this.startSet = false;
+    this.endSet = false;
     this.id = id;
     var res = getChannel(id);
     res.then((res) {
@@ -56,19 +57,95 @@ class Channel {
   String get name => _name;
   Map get jsonData => _jsonData;
   List<double> get location => [_latitude, _longitude];
+
+  bool operator ==(other) => other is Channel && other.id == this.id;
+  int get hashCode => id;
+
+  Future<Channel> updatedChannel() async {
+    if (!startSet && !endSet) {
+      List<DateTime> dataBegins = [];
+      for (Sensor sensor in _sensors) {
+        dataBegins.add(sensor.tempHistory.first.time);
+      }
+      dataBegins.reduce(
+          (value, element) => value.compareTo(element) < 0 ? value : element);
+
+      endTime = DateTime.now();
+      if (startTime == null ||
+          startTime.difference(endTime).abs() > Duration(hours: 24) ||
+          dataBegins[0].difference(endTime).abs() < Duration(hours: 24)) {
+        startTime = endTime.subtract(Duration(hours: 24));
+      }
+    } else if (!startSet && endSet) {
+      startTime = endTime.subtract(Duration(hours: 24));
+    } else if (startSet && !endSet) {
+      endTime = DateTime.now();
+    }
+
+    String startString = startTime
+        .toUtc()
+        .toIso8601String()
+        .substring(0, 19)
+        .replaceAll('T', '%20');
+    String endString = endTime
+        .toUtc()
+        .toIso8601String()
+        .substring(0, 19)
+        .replaceAll('T', '%20');
+    String url =
+        'https://api.thingspeak.com/channels/$id/feeds.json?start=$startString&end=$endString';
+    Stopwatch stopwatch = Stopwatch()..start();
+    //! These GET requests take forever, but I think that's mostly server side.
+    String jsonData = await http.read(url);
+    print('GET: ${stopwatch.elapsedMilliseconds/1000}');
+    stopwatch.reset();
+    Map newData = jsonDecode(jsonData);
+    print('Decode: ${stopwatch.elapsedMilliseconds/1000}');
+    if (newData['feeds'].isEmpty) {
+      url = 'https://api.thingspeak.com/channels/$id/feeds.json';
+      newData = jsonDecode(await http.read(url));
+    }
+    sensors.forEach((sensor) => sensor.tempHistory.clear());
+    for (Sensor sensor in _sensors) {
+      sensor.tempHistory.removeWhere((entry) =>
+          entry.time.compareTo(
+              startSet ? startTime : endTime.subtract(Duration(hours: 24))) <
+          0);
+    }
+    stopwatch.reset();
+    for (Map feed in newData['feeds']) {
+      String createdAt = feed['created_at'];
+      for (Sensor sensor in _sensors) {
+        sensor.addTemp(
+            double.tryParse(feed['field${sensor.fieldNum}'] ?? 'NaN') ?? -0.0,
+            createdAt);
+      }
+    }
+    print('Parse: ${stopwatch.elapsedMilliseconds / 1000}');
+    if (!startSet) startTime = endTime;
+    return this;
+  }
 }
 
-Future<Channel> getChannel([int channelId = 9, int results = 10]) async {
+Future<Channel> getChannel(int channelId) async {
   String url =
-      'https://api.thingspeak.com/channels/$channelId/feeds.json?results=$results';
-      try{
-  return http
-      .get(url)
-      .then((res) => (new Channel.fromJson(JSON.decode(res.body) as Map)));
-      }
-      catch (e) {
-        return new Channel('Error');
-      }
+      'https://api.thingspeak.com/channels/$channelId/feeds.json?days=1';
+  Map data = {};
+  try {
+    data = jsonDecode((await http.get(url)).body);
+  } on TypeError {
+    throw InvalidChannelException('Channel $channelId DNE or is private.');
+  }
+  if (data['feeds'].isEmpty) {
+    url = 'https://api.thingspeak.com/channels/$channelId/feeds.json?';
+    data = jsonDecode((await http.get(url)).body);
+  }
+  try {
+    return Channel.fromJson(data);
+  } catch (e) {
+    print(e);
+    throw InvalidChannelException('Channel $channelId could not be parsed');
+  }
 }
 
 class ChannelWidget extends StatelessWidget {
@@ -77,20 +154,21 @@ class ChannelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Card(
-        child: new ListTile(
-      title: new Text(channel.name),
-      subtitle: new Text(
-        'Last updated: ${channel.sensors.last.lastUpdatedPretty}',
+    return Card(
+      child: ListTile(
+        title: Text(channel.name),
+        subtitle: Text(
+          'Last updated: ${channel.sensors.last.lastUpdatedPretty}',
+        ),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => ChannelPage(channel))),
       ),
-      onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-          builder: (BuildContext context) => new ChannelPage(channel))),
-    ));
+    );
   }
 }
 
-/// For testing purposes only
-main() {
-  Future<Channel> test = getChannel();
-  test.then((res) => res._sensors.forEach((sensor) => print(sensor)));
+class InvalidChannelException implements Exception {
+  final String message;
+  InvalidChannelException(this.message);
+  String toString() => 'InvalidChannelException: $message';
 }

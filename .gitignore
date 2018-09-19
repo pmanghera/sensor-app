@@ -8,3 +8,10 @@ build/
 ios/.generated/
 packages
 .flutter-plugins
+.jks
+.properties
+android/key.jks
+android/key.properties
+androidkey.jks
+checkCharts.py
+get_test.py

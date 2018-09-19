@@ -1,0 +1,117 @@
+Flutter crash report; please file at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter packages get
+
+## exception
+
+YamlException: Error on line 17, column 1: Expected ':'.
+dev_dependencies:
+^
+
+```
+#0      Scanner._staleSimpleKeys (package:yaml/src/scanner.dart:491)
+#1      Scanner._fetchMoreTokens (package:yaml/src/scanner.dart:325)
+#2      Scanner.peek (package:yaml/src/scanner.dart:317)
+#3      Parser._parseBlockMappingKey (package:yaml/src/parser.dart:418)
+#4      Parser._stateMachine (package:yaml/src/parser.dart:86)
+#5      Parser.parse (package:yaml/src/parser.dart:47)
+#6      Loader._loadMapping (package:yaml/src/loader.dart:171)
+#7      Loader._loadNode (package:yaml/src/loader.dart:86)
+#8      Loader._loadMapping (package:yaml/src/loader.dart:165)
+#9      Loader._loadNode (package:yaml/src/loader.dart:86)
+#10     Loader._loadDocument (package:yaml/src/loader.dart:62)
+#11     Loader.load (package:yaml/src/loader.dart:54)
+#12     loadYamlDocument (package:yaml/yaml.dart:51)
+#13     loadYamlNode (package:yaml/yaml.dart:42)
+#14     loadYaml (package:yaml/yaml.dart:34)
+#15     _pluginFromPubspec (package:flutter_tools/src/plugins.dart:52)
+#16     _findPlugins.<anonymous closure> (package:flutter_tools/src/plugins.dart:75)
+#17     _HashVMBase&MapMixin&&_LinkedHashMapMixin.forEach (dart:collection-patch/dart:collection/compact_hash.dart:363)
+#18     _findPlugins (package:flutter_tools/src/plugins.dart:73)
+#19     injectPlugins (package:flutter_tools/src/plugins.dart:234)
+#20     FlutterProject.ensureReadyForPlatformSpecificTooling (package:flutter_tools/src/project.dart:62)
+#21     PackagesGetCommand.runCommand (package:flutter_tools/src/commands/packages.dart:85)
+<asynchronous suspension>
+#22     FlutterCommand.verifyThenRunCommand (package:flutter_tools/src/runner/flutter_command.dart:344)
+<asynchronous suspension>
+#23     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:279)
+<asynchronous suspension>
+#24     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:142)
+<asynchronous suspension>
+#25     _rootRun (dart:async/zone.dart:1126)
+#26     _CustomZone.run (dart:async/zone.dart:1023)
+#27     runZoned (dart:async/zone.dart:1501)
+#28     AppContext.run (package:flutter_tools/src/base/context.dart:141)
+<asynchronous suspension>
+#29     FlutterCommand.run (package:flutter_tools/src/runner/flutter_command.dart:270)
+#30     CommandRunner.runCommand (package:args/command_runner.dart:194)
+<asynchronous suspension>
+#31     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:309)
+<asynchronous suspension>
+#32     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:142)
+<asynchronous suspension>
+#33     _rootRun (dart:async/zone.dart:1126)
+#34     _CustomZone.run (dart:async/zone.dart:1023)
+#35     runZoned (dart:async/zone.dart:1501)
+#36     AppContext.run (package:flutter_tools/src/base/context.dart:141)
+<asynchronous suspension>
+#37     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:265)
+<asynchronous suspension>
+#38     CommandRunner.run.<anonymous closure> (package:args/command_runner.dart:109)
+#39     new Future.sync (dart:async/future.dart:222)
+#40     CommandRunner.run (package:args/command_runner.dart:109)
+#41     FlutterCommandRunner.run (package:flutter_tools/src/runner/flutter_command_runner.dart:174)
+#42     run.<anonymous closure> (package:flutter_tools/runner.dart:59)
+<asynchronous suspension>
+#43     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:142)
+<asynchronous suspension>
+#44     _rootRun (dart:async/zone.dart:1126)
+#45     _CustomZone.run (dart:async/zone.dart:1023)
+#46     runZoned (dart:async/zone.dart:1501)
+#47     AppContext.run (package:flutter_tools/src/base/context.dart:141)
+<asynchronous suspension>
+#48     runInContext (package:flutter_tools/src/context_runner.dart:43)
+<asynchronous suspension>
+#49     run (package:flutter_tools/runner.dart:50)
+#50     main (package:flutter_tools/executable.dart:49)
+<asynchronous suspension>
+#51     main (file:///C:/Users/pmang/flutter/packages/flutter_tools/bin/flutter_tools.dart:8)
+#52     _startIsolate.<anonymous closure> (dart:isolate-patch/dart:isolate/isolate_patch.dart:277)
+#53     _RawReceivePortImpl._handleMessage (dart:isolate-patch/dart:isolate/isolate_patch.dart:165)
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel beta, v0.5.1, on Microsoft Windows [Version 10.0.17134.167], locale en-US)
+    • Flutter version 0.5.1 at C:\Users\pmang\flutter
+    • Framework revision c7ea3ca377 (9 weeks ago), 2018-05-29 21:07:33 +0200
+    • Engine revision 1ed25ca7b7
+    • Dart version 2.0.0-dev.58.0.flutter-f981f09760
+
+[✓] Android toolchain - develop for Android devices (Android SDK 27.0.3)
+    • Android SDK at C:\Users\pmang\AppData\Local\Android\sdk
+    • Android NDK location not configured (optional; useful for native profiling support)
+    • Platform android-27, build-tools 27.0.3
+    • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_152-release-915-b01)
+    • All Android licenses accepted.
+
+[✓] Android Studio (version 3.0)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    ✗ Flutter plugin not installed; this adds Flutter specific functionality.
+    ✗ Dart plugin not installed; this adds Dart specific functionality.
+    • Java version OpenJDK Runtime Environment (build 1.8.0_152-release-915-b01)
+
+[!] VS Code, 64-bit edition (version 1.25.1)
+    • VS Code at C:\Program Files\Microsoft VS Code
+    • Flutter extension not installed; install from
+      https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter
+
+[✓] Connected devices (1 available)
+    • PH 1 • PM1LHMA832901598 • android-arm64 • Android 8.1.0 (API 27)
+
+! Doctor found issues in 1 category.
+```
