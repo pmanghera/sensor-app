@@ -28,8 +28,11 @@ class _ChannelPageState extends State<ChannelPage> {
                 List timeRange = await (Navigator.push(
                     context,
                     MaterialPageRoute<List>(
-                        builder: (BuildContext context) =>
-                            DateAndTimePickerDemo(fromSet: channel.startSet, fromDate: channel.st,))));
+                      builder: (BuildContext context) => DateAndTimePickerDemo(
+                            fromSet: channel.startSet,
+                            fromDate: channel.startTime,
+                          ),
+                    )));
                 if (timeRange != null) {
                   setState(() {
                     if (timeRange.isEmpty) {

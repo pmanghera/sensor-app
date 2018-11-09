@@ -97,10 +97,10 @@ class Channel {
     Stopwatch stopwatch = Stopwatch()..start();
     //! These GET requests take forever, but I think that's mostly server side.
     String jsonData = await http.read(url);
-    print('GET: ${stopwatch.elapsedMilliseconds/1000}');
+    print('GET: ${stopwatch.elapsedMilliseconds / 1000}');
     stopwatch.reset();
     Map newData = jsonDecode(jsonData);
-    print('Decode: ${stopwatch.elapsedMilliseconds/1000}');
+    print('Decode: ${stopwatch.elapsedMilliseconds / 1000}');
     if (newData['feeds'].isEmpty) {
       url = 'https://api.thingspeak.com/channels/$id/feeds.json';
       newData = jsonDecode(await http.read(url));
