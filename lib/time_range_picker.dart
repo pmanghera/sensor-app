@@ -91,7 +91,7 @@ class _DateTimePicker extends StatelessWidget {
           activeColor: Theme.of(context).accentColor,
         ),
         Expanded(
-          flex: 4,
+          flex: 1,
           child: _InputDropdown(
             labelText: labelText,
             valueText: DateFormat.yMMMd().format(selectedDate),
@@ -103,7 +103,7 @@ class _DateTimePicker extends StatelessWidget {
         ),
         const SizedBox(width: 12.0),
         Expanded(
-          flex: 3,
+          flex: 1,
           child: _InputDropdown(
             valueText: selectedTime.format(context),
             valueStyle: valueStyle,
